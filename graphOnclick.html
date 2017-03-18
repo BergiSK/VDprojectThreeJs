@@ -1,0 +1,454 @@
+<html>
+	<head>
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="https://rawgit.com/mrdoob/three.js/dev/build/three.js"> </script>
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/Detector.js"></script>
+		
+		<script>
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+			
+			var container;
+			var data, sessionCount, maxClicks = 0, maxTimeSpent = 0;
+			var camera, scene, labelScene, renderer;
+			var plane, cube;
+			var mouse, raycaster;
+			var selectedLabel;
+			var squareEdgeSize = 50, xSize, ySize, zSize;
+			
+			var rollOverMesh, rollOverMaterial;
+			//var cubeGeo, cubeMaterial;
+
+			var objects = [];
+			var colorPalette = {};
+
+			getData();
+			
+			function getData() {
+				var request = new XMLHttpRequest();
+				request.open("GET", "/data/vdMockJson.json", true);
+				request.onload = function(e) {
+					data = JSON.parse(request.responseText);
+					sessionCount = data.length;
+					init();
+					render();
+				};
+			
+				request.send(null)
+			}
+			
+			function init() {	
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				
+				// camera
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 10000 );
+				camera.position.set( -500, 800, -1300 );
+				camera.lookAt( new THREE.Vector3() );
+
+				// scene
+				scene = new THREE.Scene();
+				labelScene = new THREE.Scene();
+				
+				// controls
+				controls = new THREE.OrbitControls( camera, container );
+				controls.maxPolarAngle = Math.PI;
+				controls.minDistance = 500;
+				controls.maxDistance = 7500;
+				
+				buildVisualization();
+				
+				// grid
+				createGrid3d(scene);
+					
+				labelAxes();
+
+				raycaster = new THREE.Raycaster();
+				mouse = new THREE.Vector2();
+
+				// ground
+				var geometry = new THREE.PlaneBufferGeometry( 1000, 1000 );
+				geometry.rotateX( - Math.PI / 2 );
+				plane = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { visible: false } ) );
+				scene.add( plane );
+
+				objects.push( plane );
+
+				createLights();
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setClearColor( 0xf0f0f0 );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.autoClear = false;
+				container.appendChild( renderer.domElement );
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+				//document.addEventListener( 'keydown', onDocumentKeyDown, false );
+				//document.addEventListener( 'keyup', onDocumentKeyUp, false );
+				
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+			
+			/* ---------- VISUALIZE DATASET ------------ */
+			function initColorPalette() {
+				colorPalette['list'] = 0xDF1F1F;
+				colorPalette['view'] = 0xFFCC66;
+				colorPalette['basket'] = 0x00CC66;
+				colorPalette['purchase_processed'] = 0xFF99FF;
+				colorPalette['search'] = 0xFF9933;
+				colorPalette['rating'] = 0x3399FF;
+			}
+			
+			function buildVisualization() {
+				initColorPalette();
+				data.forEach(createSessionVisualization);
+			}
+			
+			function createSessionVisualization(session, sessionIndex) {
+				// finds maxClicks for grid creating purpose
+				if (session.clicks.length > maxClicks) {
+					maxClicks = session.clicks.length;
+				}
+			
+				for (i = 0; i < session.clicks.length; i++) {
+					buildDataPoint(session.clicks[i], i, sessionIndex);
+				}
+			}
+			
+			function buildDataPoint(click, clickIndex, sessionIndex) {
+				// finds maxTimeSpent for grid creating purpose
+				if (click.timeSpent > maxTimeSpent) {
+					maxTimeSpent = click.timeSpent;
+				}
+				
+				// vizual mapping
+				var cubeGeo = new THREE.BoxGeometry( squareEdgeSize, click.timeSpent, squareEdgeSize );
+				var cubeMaterial = new THREE.MeshPhongMaterial( { color: colorPalette[click.event] } );
+				
+				// create cube
+				var voxel = new THREE.Mesh( cubeGeo, cubeMaterial );
+				voxel.position.x = clickIndex*squareEdgeSize + squareEdgeSize/2;
+				voxel.position.y = click.timeSpent/2;
+				voxel.position.z = sessionIndex*squareEdgeSize + squareEdgeSize/2;
+				
+				// add cube to scene
+				scene.add( voxel );
+				objects.push( voxel );
+			}
+			
+			/* ---------- VISUALIZE DATASET END ------------ */
+			
+			function createLights() {
+				// Lights
+				var ambientLight = new THREE.AmbientLight( 0x404040 );
+				scene.add( ambientLight );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffffff );
+				directionalLight.position.x = 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = 0.75;
+				directionalLight.position.normalize();
+				scene.add( directionalLight );
+
+				var directionalLight = new THREE.DirectionalLight( 0x808080 );
+				directionalLight.position.x = - 1;
+				directionalLight.position.y = 1;
+				directionalLight.position.z = - 0.75;
+				directionalLight.position.normalize();
+				scene.add( directionalLight );
+			}
+			
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+			
+			function onDocumentMouseMove( event ) {
+
+				event.preventDefault();
+/*
+				mouse.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+
+				raycaster.setFromCamera( mouse, camera );
+
+				var intersects = raycaster.intersectObjects( objects );
+
+				if ( intersects.length > 0 ) {	
+					var intersect = intersects[ 0 ];
+
+					rollOverMesh.position.copy( intersect.point ).add( intersect.face.normal );
+					rollOverMesh.position.divideScalar( 50 ).floor().multiplyScalar( 50 ).addScalar( 25 );
+
+				} */
+				
+				render();
+
+			}
+
+			function onDocumentMouseDown( event ) {
+
+				event.preventDefault();
+
+				mouse.set( ( event.clientX / window.innerWidth ) * 2 - 1, - ( event.clientY / window.innerHeight ) * 2 + 1 );
+
+				raycaster.setFromCamera( mouse, camera );
+
+				var intersects = raycaster.intersectObjects( objects );
+
+				if ( intersects.length > 0 ) {
+
+					var intersect = intersects[ 0 ];
+
+					// delete cube
+
+					// create label
+					if (intersect.object.geometry.type == "BoxGeometry") { 
+							
+						var name = String('label' + intersect.object.position.x + intersect.object.position.y + intersect.object.position.z);
+						selectedLabel = labelScene.getObjectByName(name); 
+							
+						if (selectedLabel == null) {
+								
+							var labelText = "x:" + intersect.object.position.x + " " 
+								+ "y:" + intersect.object.position.y + " " 
+								+ "z:" + intersect.object.position.z;
+
+							labelScene.add(makeTextLabel( labelText, name, intersect.object.position,
+								{ fontsize: 50, borderColor: {r:0, g:0, b:255, a:1.0}, backgroundColor: {r:100, g:100, b:255, a:0.8} } ));
+						} else {
+							console.log("removing");
+							labelScene.remove(selectedLabel);
+						}
+							
+					} 
+						
+				}
+
+				render();
+
+			}
+			
+			// dynamically creates grid based on size of the dataset
+			function createGrid3d(scene) {							
+				zSize = sessionCount * squareEdgeSize;
+				xSize = maxClicks * squareEdgeSize;
+				ySize = Math.ceil(maxTimeSpent * 1.2/squareEdgeSize) * squareEdgeSize;
+				
+				var geometry = new THREE.Geometry();
+
+				for ( var i = 0; i <= xSize; i += squareEdgeSize ) {
+					// spodok
+					geometry.vertices.push( new THREE.Vector3( i, 0, 0 ) );
+					geometry.vertices.push( new THREE.Vector3( i, 0, zSize ) );
+				}
+				
+				for (var i = 0; i <= zSize; i += squareEdgeSize) {
+					// spodok
+					geometry.vertices.push( new THREE.Vector3( 0, 0, i ) );
+					geometry.vertices.push( new THREE.Vector3( xSize, 0, i ) );
+				}
+				
+				for (var i = 0; i <= ySize; i += squareEdgeSize) {
+					// zadna stena
+					geometry.vertices.push( new THREE.Vector3( 0, i, zSize) );
+					geometry.vertices.push( new THREE.Vector3( xSize, i, zSize) );
+				}
+				
+				for (var i = 0; i <= xSize; i += squareEdgeSize) {
+					// zadna stena
+					geometry.vertices.push( new THREE.Vector3( i, 0, zSize ) );
+					geometry.vertices.push( new THREE.Vector3( i, ySize, zSize ) );
+				}
+				
+				for (var i = 0; i <= zSize; i += squareEdgeSize) {
+					// lava stena
+					geometry.vertices.push( new THREE.Vector3( xSize, 0, i ) );
+					geometry.vertices.push( new THREE.Vector3( xSize, ySize, i ) );
+				}
+				
+				for (var i = 0; i <= ySize; i += squareEdgeSize) {
+					// lava stena
+					geometry.vertices.push( new THREE.Vector3( xSize, i, 0 ) );
+					geometry.vertices.push( new THREE.Vector3( xSize, i, zSize ) );
+				}
+
+				var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 0.2, transparent: true } );
+
+				var grid = new THREE.LineSegments( geometry, material );
+				scene.add( grid );
+			}
+			
+			function labelAxes() {
+				// labels
+				var labelsX = labelAxis(xSize, Array.from(Array(maxClicks).keys()),"x");
+				scene.add(labelsX);
+				
+				var labelsY = labelAxis(ySize, Array.from({length: ySize/squareEdgeSize}, (value, key) => key*50),"y");
+				scene.add(labelsY);
+				
+				var labelsZ = labelAxis(zSize, Array.from(Array(sessionCount).keys()),"z");
+				scene.add(labelsZ);
+			}
+			
+			function labelAxis(width, data, direction){
+				var p;
+				
+				if (direction=="x"){
+					p = {x:-squareEdgeSize/2,y:-squareEdgeSize/2,z:-squareEdgeSize/2}
+				}
+				if (direction=="y"){
+					p = {x:xSize,y:0,z:0}
+				}
+				if (direction=="z"){
+					p = {x:-squareEdgeSize-10,y:-squareEdgeSize/2,z:squareEdgeSize}
+				}
+				
+				var separator = width/data.length,
+							p,
+							dobj = new THREE.Object3D();
+
+				for ( var i = 0; i < data.length; i ++ ) {
+						var label = makeTextSprite(data[i]);
+
+						label.position.set(p.x,p.y,p.z);
+
+						dobj.add( label );
+
+						p[direction]+=separator;
+
+				}
+				return dobj;
+			}
+			
+			function makeTextSprite(message, opts) {
+				var parameters = opts || {};
+				var fontface = parameters.fontface || 'Helvetica';
+				var fontsize = parameters.fontsize || 70;
+				var canvas = document.createElement('canvas');
+				var labelContext = canvas.getContext('2d');
+				labelContext.font = fontsize + "px " + fontface;
+
+				// get size data (height depends only on font size)
+				var metrics = labelContext.measureText(message);
+				var textWidth = metrics.width;
+
+				// text color
+				labelContext.fillStyle = 'rgba(0, 0, 0, 1.0)';
+				labelContext.fillText(message, 0, fontsize);
+
+				// canvas contents will be used for a texture
+				var texture = new THREE.Texture(canvas);
+				texture.minFilter = THREE.LinearFilter;
+				texture.needsUpdate = true;
+
+				var spriteMaterial = new THREE.SpriteMaterial({
+				map: texture
+				});
+				var sprite = new THREE.Sprite(spriteMaterial);
+				sprite.scale.set(100, 50, 1.0);
+				return sprite;
+			}
+			
+			function makeTextLabel( message, name, position, parameters ) {
+				if ( parameters === undefined ) parameters = {};
+				
+				var fontface = parameters.hasOwnProperty("fontface") ? 
+					parameters["fontface"] : "Arial";
+				
+				var fontsize = parameters.hasOwnProperty("fontsize") ? 
+					parameters["fontsize"] : 18;
+				
+				var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
+					parameters["borderThickness"] : 4;
+				
+				var borderColor = parameters.hasOwnProperty("borderColor") ?
+					parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
+				
+				var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
+					parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+					
+				var canvas = document.createElement('canvas');
+				var labelContext = canvas.getContext('2d');
+				
+				// max canvas size - clips overflow
+				labelContext.canvas.width = 450;
+				labelContext.font = "Bold " + fontsize + "px " + fontface;
+				
+				// get size data (height depends only on font size)
+				var metrics = labelContext.measureText( message );
+				
+				// forces to draw rectange big enough for the given text
+				var textWidth = metrics.width + 30;
+
+				// background color
+				labelContext.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
+											  + backgroundColor.b + "," + backgroundColor.a + ")";
+				// border color
+				labelContext.strokeStyle = "rgba(" + borderColor.r + "," + borderColor.g + ","
+											  + borderColor.b + "," + borderColor.a + ")";
+
+				labelContext.lineWidth = borderThickness;
+				roundRect(labelContext, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
+				// 1.4 is extra height factor for text below baseline: g,j,p,q.
+				
+				// text color
+				labelContext.fillStyle = "rgba(0, 0, 0, 1.0)";
+
+				labelContext.fillText( message, borderThickness + 15, fontsize + borderThickness);
+				
+				// canvas contents will be used for a texture
+				var texture = new THREE.Texture(canvas); 
+				texture.needsUpdate = true;
+
+				var spriteMaterial = new THREE.SpriteMaterial( 
+					{ map: texture } );
+				var sprite = new THREE.Sprite( spriteMaterial );
+				sprite.scale.set(100,50,1.0);
+				sprite.name = name;
+				sprite.position.set(position.x,position.y,position.z);
+				sprite.position.y += 80;
+				return sprite;	
+			}
+				
+			// function for drawing rounded rectangles
+			function roundRect(ctx, x, y, w, h, r) 
+			{
+				ctx.beginPath();
+				ctx.moveTo(x+r, y);
+				ctx.lineTo(x+w-r, y);
+				ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+				ctx.lineTo(x+w, y+h-r);
+				ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+				ctx.lineTo(x+r, y+h);
+				ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+				ctx.lineTo(x, y+r);
+				ctx.quadraticCurveTo(x, y, x+r, y);
+				ctx.closePath();
+				ctx.fill();
+				ctx.stroke();   
+			}
+
+			function render() {
+				renderer.clear();
+				renderer.render( scene, camera );
+				renderer.clearDepth();
+				renderer.render( labelScene, camera );
+			}
+
+
+		</script>
+	</body>
+</html>

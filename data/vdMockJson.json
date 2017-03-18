@@ -1,0 +1,293 @@
+[{
+	"_id": {
+		"sessionId": "000025c1-f9c9-4280-9f75-12f3bf5db867"
+	},
+	"number": 8,
+	"clicks": [{
+		"_id": 1,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 30
+	},
+	{
+		"_id": 13,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 40
+	},
+	{
+		"_id": 14,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 20
+	},
+	{
+		"_id": 2,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 60
+	},
+	{
+		"_id": 3,
+		"event": "basket",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 10
+	},
+	{
+		"_id": 4,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 10
+	},
+	{
+		"_id": 15,
+		"event": "rating",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 40
+	},
+	{
+		"_id": 16,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 20
+	}
+	]
+},
+{
+	"_id": {
+		"sessionId": "000025c1-f9c9-4280-9f75-12f3bf5db868"
+	},
+	"number": 6,
+	"clicks": [{
+		"_id": 5,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577832",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 50
+	},
+	{
+		"_id": 6,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577832",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 120
+	},
+	{
+		"_id": 7,
+		"event": "basket",
+		"entityId": "zlv_5797cf3e78e660.25577832",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 5
+	},
+	{
+		"_id": 8,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577832",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 15
+	},
+	{
+		"_id": 30,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 28
+	},
+	{
+		"_id": 31,
+		"event": "rating",
+		"entityId": "zlv_5797cf3e78e660.25577832",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 20
+	}	
+	]
+},
+{
+	"_id": {
+		"sessionId": "000025c1-f9c9-4280-9f75-12f3bf5db869"
+	},
+	"number": 4,
+	"clicks": [{
+		"_id": 9,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577833",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 60
+	},
+	{
+		"_id": 10,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577833",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 40
+	},
+	{
+		"_id": 11,
+		"event": "basket",
+		"entityId": "zlv_5797cf3e78e660.25577833",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 30
+	},
+	{
+		"_id": 12,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577833",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 20
+	}]
+},{
+	"_id": {
+		"sessionId": "000025c1-f9c9-4280-9f75-12f3bf5db867"
+	},
+	"number": 9,
+	"clicks": [{
+		"_id": 17,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 50
+	},
+	{
+		"_id": 32,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 80
+	},
+	{
+		"_id": 18,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 80
+	},
+	{
+		"_id": 19,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 40
+	},
+	{
+		"_id": 20,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 60
+	},
+	{
+		"_id": 21,
+		"event": "basket",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 30
+	},
+	{
+		"_id": 22,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 57
+	},
+	{
+		"_id": 23,
+		"event": "rating",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 25
+	},
+	{
+		"_id": 24,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 100
+	}
+	]
+},
+{
+	"_id": {
+		"sessionId": "000025c1-f9c9-4280-9f75-12f3bf5db867"
+	},
+	"number": 10,
+	"clicks": [{
+		"_id": 42,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 140
+	},
+	{
+		"_id": 33,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 180
+	},
+	{
+		"_id": 34,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 75
+	},
+	{
+		"_id": 35,
+		"event": "list",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 22
+	},
+	{
+		"_id": 36,
+		"event": "view",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 36
+	},
+	{
+		"_id": 37,
+		"event": "basket",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 58
+	},
+	{
+		"_id": 38,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 10
+	},
+	{
+		"_id": 39,
+		"event": "rating",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 115
+	},
+	{
+		"_id": 40,
+		"event": "purchase_processed",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 130
+	},
+	{
+		"_id": 41,
+		"event": "rating",
+		"entityId": "zlv_5797cf3e78e660.25577831",
+		"eventTime": "2017-01-31T23:59:59.000Z",
+		"timeSpent": 52
+	}
+	]
+}
+]
