@@ -1,0 +1,251 @@
+<html>
+	<head>
+		<title>Session Explorer</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+			#legend {width:330px; background-color:white;}
+			#filter {width:330px; background-color:white; 
+					font-family:Roboto, Arial, sans-serif;}
+			#menu { box-shadow: 0 0 20px rgba(0,0,0,0.3); width:330px; position: absolute; }
+			#session { background-color: white;
+    font-family: Roboto, Arial, sans-serif; }
+			.headerSection { background: #4285F4;     padding-top: 5px; padding-bottom: 5px;}
+			.header { width: 120px; margin: auto; padding-top:5px; font-family:Roboto, Arial, sans-serif; font-size:18px; color:white; text-align: center;}
+			#square {
+				width: 20px;
+				height: 20px;
+				margin-right: 15px;
+			}
+			.buttonSection {text-align: center;}
+			.filterContent {padding:6px;}
+			
+			
+			.list {}
+			.view {}
+			.basket {}
+			.purchaseProcessed {}
+			.rating {}
+			.search {}
+			
+			form { margin-bottom: 0px; }
+			label { margin-top: 0px !important;}
+			
+			.list #square { background:#DF1F1F;}
+			.view #square { background:#FFCC66; }
+			.basket #square { background:#00CC66; }
+			.purchaseProcessed #square { background:#FF99FF; }
+			.rating #square { background:#FF9933; }
+			.search #square { background:#3399FF; }
+			
+			.liContent {display: inline-flex;}
+			ul { list-style-type: none; padding-left: 0px; margin-top: 0px; margin-bottom: 0px;}
+			li {padding-left: 30px; padding-top: 6px; padding-bottom:3px; font-family:Roboto, Arial, sans-serif; }
+			
+			li:hover, #clicked {
+				background:#e6f2ff;
+			}
+			
+			
+			
+			.section-divider-bottom-line {
+				border-bottom: 1px solid #e6e6e6;
+				height: 0px;
+			}
+			
+			fieldset {
+				border: 0;
+			}
+			label {
+				display: block;
+				margin: 30px 0 0 0;
+			}
+			.overflow {
+				height: 200px;
+			}
+			
+			.sliderSection { padding: 10px; font-family:Roboto, Arial, sans-serif;}
+			.sliderSection input { width: 80px;}
+			.sliderSection label { width: 150px;}
+			
+			#sessionDetails td { padding-left: 10px;}
+			#sessionDetails table { padding-right: 10px;}
+			
+			#sessions {
+				height: 200px !important;
+			}
+			
+			ul.ui-menu { max-height: 200px !important; }
+			.sessionId {     font-size: 9px;}
+			.count {padding-left:10px;}
+			
+			.icon{
+				color: white;
+				width: 20px;
+				float: right;
+				position: relative;
+				bottom: 20px;
+				right: 10px;
+			}
+			
+			.hidden {
+				display:none;
+			}
+		</style>
+	</head>
+	<body>
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="/resources/demos/style.css">
+		<script src="https://rawgit.com/mrdoob/three.js/dev/build/three.js"> </script>
+		<script src="js/controls/OrbitControls.js"></script>
+		<script src="js/Detector.js"></script>
+		  
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="https://use.fontawesome.com/c07e7f4151.js"></script>
+		<script src="js/sceneVisualize.js"></script>	
+		<script src="js/menuHandling.js"></script>	
+		
+		<div id="menu">
+		<div id="legend"> 
+			<div class="headerSection"> 
+				<div class="header"> Events </div> 
+				<div class="icon events" onclick="eventsWrap()"><i class="fa fa-chevron-down" aria-hidden="true"></i></div> 
+			</div>
+			<div class="visualMapping hidden" style="padding:6px;">
+				<ul>
+					<li class="list" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)"> 
+						<div class="liContent"> <div id="square" class="list" draggable="true" ondragstart="drag(event)"> </div> list <div class="count"> </div> </div> 
+					</li>
+					<div class="section-divider-bottom-line"> </div>
+					<li class="view" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)">
+						<div class="liContent"> <div id="square" class="view" draggable="true" ondragstart="drag(event)"> </div> view <div class="count"> </div> </div> 
+					</li>
+					<div class="section-divider-bottom-line"> </div>
+					<li class="basket" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)"> 
+						<div class="liContent"> <div id="square" class="basket" draggable="true" ondragstart="drag(event)"> </div> basket <div class="count"> </div> </div> 
+					</li>
+					<div class="section-divider-bottom-line"> </div>
+					<li class="purchaseProcessed" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)">
+						<div class="liContent"> <div id="square" class="purchase_processed" draggable="true" ondragstart="drag(event)"> </div> purchase_processed <div class="count"> </div> </div>
+					</li>
+					<div class="section-divider-bottom-line"> </div>
+					<li class="search" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)"> 
+						<div class="liContent"> <div id="square" class="search" draggable="true" ondragstart="drag(event)"> </div> search <div class="count"> </div> </div> 
+					</li>
+					<div class="section-divider-bottom-line"> </div>
+					<li class="rating" onclick="onListClick(this)" ondrop="drop(event)" ondragover="allowDrop(event)"> 
+						<div class="liContent"> <div id="square" class="rating" draggable="true" ondragstart="drag(event)"> </div> rating <div class="count"> </div> </div> 	
+					</li>
+				</ul>
+				
+				<div class="sliderSection">
+					<div class="squareEdgeSize">
+						<div style="display: inline-flex; padding-bottom:7px;">
+							<label for="size">Event bar size:</label>
+							<input type="text" id="size" readonly style="border:0; color:#f6931f; font-weight:bold;">
+						</div>
+						<div id="slider-range-event-size"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div id="session">
+			<div class="headerSection"> 
+				<div class="header"> Session </div> 
+				<div class="icon sessions" onclick="sessionWrap()"><i class="fa fa-chevron-up" aria-hidden="true"></i></div> 
+			</div>
+			
+			<div class="sessionContent">
+				<div style="display:inline-flex; margin-top: 5px; padding-left: 20px;">
+					<button onclick="swapSessions(0)"><</button> <button onclick="swapSessions(1)">></button>
+					<div class="shownSessions" style="border: 0; color: #f6931f; font-weight: bold; padding-left:20px;"></div> 			
+				</div>
+				<form action="#">
+					<fieldset>
+						<label for="sessions">Select a session</label>
+						<select name="sessions" id="sessions"> 
+						</select>
+					</fieldset>
+				</form>
+				
+				<div id="sessionDetails">
+					<table style = "padding-bottom: 10px;">
+						<tr> 
+							<td> Session ID:  </td> 
+							<td> <div class="sessionId">-</div> </td> 
+						</tr>
+						<tr> 
+							<td> Number of events: </td> 
+							<td> <div class="numEvents">-</div> </td> 
+						</tr>
+						<tr> 
+							<td> Total time(s): </td> 
+							<td> <div class="totalTime">-</div> </td>  
+						</tr>
+						<tr> 
+							<td> Average time(s): </td> 
+							<td> <div class="avgTime">-</div> </td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		
+		<div id="filter"> 
+			<div class="headerSection"> 
+				<div class="header"> Filter </div>
+				<div class="icon filter" onclick="filterWrap()"><i class="fa fa-chevron-up" aria-hidden="true"></i></div> 
+			</div>
+			<div class="filterContent">
+				<div class="inputSection">
+					<table>
+					<tr>
+						<td><input type="checkbox" class="checkbox" name="list" value="List"> List </td>
+						<td><input type="checkbox" class="checkbox" name="view" value="View"> View </td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" class="checkbox" name="basket" value="Basket"> Basket </td>
+						<td><input type="checkbox" class="checkbox" name="purchase_processed" value="Purchase"> Purchase processed </td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" class="checkbox" name="search" value="Search"> Search </td>
+						<td><input type="checkbox" class="checkbox" name="rating" value="Rating"> Rating </td>
+					</tr>
+					</table>
+				</div>
+				
+				<div class="sliderSection">
+					<div class="eventRange">
+						<div style="display: inline-flex; padding-bottom:7px;">
+							<label for="amount">Event count:</label>
+							<input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+						</div>
+						<div id="slider-range-event-count"></div>
+					</div>
+					
+					<div class="eventTimeRange" style="padding-top: 5px;">
+						<div style="display: inline-flex; padding-bottom:7px;">
+							<label for="duration">Event duration:</label>
+							<input type="text" id="duration" readonly style="border:0; color:#f6931f; font-weight:bold;">
+						</div>
+						<div id="slider-range-event-duration"></div>
+					</div>
+					
+				</div>
+				
+				<div class="buttonSection">
+					<button onclick="filter()"> Filter </button> 
+					<button onclick="reset()"> Reset </button>
+					<button onclick="rotateCameraTop()"> TOP </button>
+					<button onclick="rotateCameraX()"> X </button>
+					<button onclick="rotateCameraZ()"> Z </button>
+				</div>
+				
+			</div>
+		</div>
+		
+		</div>
+	</body>
+</html>

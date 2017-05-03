@@ -157,7 +157,7 @@
 	},
 	{
 		"_id": 32,
-		"event": "list",
+		"event": "search",
 		"entityId": "zlv_5797cf3e78e660.25577831",
 		"eventTime": "2017-01-31T23:59:59.000Z",
 		"timeSpent": 80
